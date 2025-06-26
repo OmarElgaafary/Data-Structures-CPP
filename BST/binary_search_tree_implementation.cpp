@@ -10,21 +10,21 @@ struct Node
 
 Node* create_node(int data)
 {
-    Node* new_node = new Node{data, nullptr, nullptr};
+    Node* new_node = new Node{data, NULL, NULL};
     return new_node;
 }
 
 Node* insert_node(Node* node, int data)
 {
-    if (node == nullptr)
+    if (node == NULL)
     {
         node = create_node(data);
     }
-    else if (node->data <= data)
+    else if (data <= node->data)
     {
         node->left = insert_node(node->left, data);
     }
-    else if (node->data > data)
+    else 
     {
         node->right = insert_node(node->right, data);
     }
@@ -34,15 +34,15 @@ Node* insert_node(Node* node, int data)
 
 bool bst_bool(Node* node, int data)
 {
-    if (node == nullptr)
+    if (node == NULL)
         return false;
     else if (node->data == data)
         return true;
-    else if (node->data <= data)
+    else if (data <= node->data)
     {
        return bst_bool(node->left, data);
     }
-    else if (node->data > data)
+    else 
     {
        return bst_bool(node->right, data);
     }
@@ -51,7 +51,7 @@ bool bst_bool(Node* node, int data)
 
 int main()
 {
-    Node* bst_root = nullptr;
+    Node* bst_root = NULL;
 
 
     bst_root = insert_node(bst_root, 13);
@@ -61,5 +61,6 @@ int main()
     bst_root = insert_node(bst_root, 17);
 
 
-    std::cout << bst_bool(bst_root,17);
+    if(bst_bool(bst_root,12)) std::cout << "[Found]\n";
+    else std::cout << "[Not Found]\n";
 }
