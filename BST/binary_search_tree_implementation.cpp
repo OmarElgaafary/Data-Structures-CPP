@@ -40,11 +40,11 @@ bool bst_bool(Node* node, int data)
         return true;
     else if (node->data <= data)
     {
-        bst_bool(node->left, data);
+       return bst_bool(node->left, data);
     }
     else if (node->data > data)
     {
-        bst_bool(node->right, data);
+       return bst_bool(node->right, data);
     }
 }
 
