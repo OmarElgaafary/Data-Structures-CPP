@@ -1,4 +1,3 @@
-
 #include <iostream>
 
 struct Node {
@@ -52,19 +51,27 @@ public:
     bool Search(int data)
     {
         Node* tmp = root;
-        if (tmp == nullptr) return false;
+        if (tmp == nullptr)
+        {
+            std::cout << "[Tree Empty]\n";
+            return false;
+        }
         else
         {
             while (tmp != nullptr)
             {
                 if (tmp->data == data)
+                {
+                    std::cout << "[Found]\n";
                     return true;
+                }
                 else if (data < tmp->data)
                     tmp = tmp->left;
                 else if (data > tmp->data)
                     tmp = tmp->right;
 
             }
+            std::cout << "[Not Found]\n";
             return false;
         }
 
@@ -84,6 +91,6 @@ int main()
     my_bst.insert_node(1);
     my_bst.insert_node(34);
 
-    std::cout << my_bst.Search(26);
+    my_bst.Search(26);
 
 }
