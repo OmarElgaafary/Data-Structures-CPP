@@ -10,8 +10,12 @@ class BST
 {
 private:
     Node* root = nullptr;
+    
 
 public:
+    //destructor
+    ~BST() { destroy_trees(root); };
+
     void insert_node(int data)
     {
         Node* new_node = new Node{ data, nullptr, nullptr };
@@ -24,8 +28,11 @@ public:
         Node* tmp = root;
         while (tmp != nullptr)
         {
-            if (tmp->data == new_node->data) // no dulpicates.
+            if (tmp->data == new_node->data)
+            {
+                delete new_node;
                 return;
+            }
             else if (new_node->data < tmp->data && tmp->left == nullptr)
             {
                 tmp->left = new_node;
@@ -51,32 +58,60 @@ public:
     bool Search(int data)
     {
         Node* tmp = root;
+
         if (tmp == nullptr)
-        {
-            std::cout << "[Tree Empty]\n";
             return false;
-        }
-        else
+  
+        while (tmp != nullptr)
         {
-            while (tmp != nullptr)
-            {
-                if (tmp->data == data)
-                {
-                    std::cout << "[Found]\n";
-                    return true;
-                }
-                else if (data < tmp->data)
-                    tmp = tmp->left;
-                else if (data > tmp->data)
-                    tmp = tmp->right;
+            if (tmp->data == data)
+                return true;
+            else if (data < tmp->data)
+                tmp = tmp->left;
+            else if (data > tmp->data)
+                tmp = tmp->right;
 
-            }
-            std::cout << "[Not Found]\n";
-            return false;
+        }
+        return false;
+    }
+
+    void destroy_trees(Node* root)
+    {
+        if (root != nullptr)
+        {
+            destroy_trees(root->left);
+            destroy_trees(root->right);
+            delete root;
+        }
+    }
+
+    int find_min()
+    {
+        if (root == nullptr) return -1;
+
+        Node* tmp = root;
+
+        while (tmp->left != nullptr)
+        {
+            tmp = tmp->left;
         }
 
-        
-        
+        return tmp->data;
+  
+    }
+
+    int find_max()
+    {
+        if (root == nullptr) return -1;
+
+        Node* tmp = root;
+
+        while (tmp->right != nullptr)
+        {
+            tmp = tmp->right;
+        }
+
+        return tmp->data;
     }
 };
 
@@ -88,9 +123,12 @@ int main()
     my_bst.insert_node(14);
     my_bst.insert_node(3);
     my_bst.insert_node(26);
-    my_bst.insert_node(1);
+    my_bst.insert_node(2);
     my_bst.insert_node(34);
+    
 
-    my_bst.Search(26);
+
+    std::cout << my_bst.find_max();
+    /*std::cout << (my_bst.Search(26) ? "[Found]\n" : "[Not Found]\n");*/
 
 }
