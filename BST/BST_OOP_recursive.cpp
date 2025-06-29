@@ -1,5 +1,5 @@
 #include <iostream>
-#include <queue>
+#include <climits>
 struct Node
 {
     int data;
@@ -10,24 +10,13 @@ struct Node
 class BST
 {
 private:
-    Node* root = nullptr;
+    Node* bst_root = nullptr;
 public:
-
-    Node* get_root()
-    {
-        return root;
-    }
-
-    void Find(int data)
-    {
-        std::cout << (Search(root, data) ? "[Found]\n" : "[Not Found]\n");
-    }
 
     void create_node(int data)
     {
-        root = insert_node(root, data);
+        bst_root = insert_node(bst_root, data);
     }
-
 
     Node* insert_node(Node* root, int data)
     {
@@ -35,17 +24,19 @@ public:
         if (root == nullptr)
         {
             root = new_node;
+            return root;
+
         }
 
-        else if (new_node->data == root->data)
-            return root; // no duplicates
-        
-        else if (new_node->data < root->data)
+        else if (root->data == data)
+            return root;
+
+        else if (data < root->data)
         {
             root->left = insert_node(root->left, data);
         }
 
-        else
+        else if (data > root->data)
         {
             root->right = insert_node(root->right, data);
         }
@@ -53,84 +44,95 @@ public:
         return root;
     }
 
-    bool Search(Node* root ,int data)
+    bool validate(Node* root, int min_value, int max_value)
     {
-        Node* tmp = root;
-        if (root == nullptr) return false;
-   
-        else if (data == root->data)
-            return true;
+        if (root == nullptr) return true;
+
+        if (!(root->data > min_value && root->data < max_value))
+            return false;
+
+        return validate(root->left, min_value, root->data) &&
+               validate(root->right, root->data, max_value);
+    }
+
+    Node* get_root()
+    {
+        return bst_root;
+    }
+
+    Node* find_max(Node* root)
+    {
+        if (root->right == nullptr) return root;
+        return find_max(root->right);
+    }
+
+    Node* Delete(Node* root, int data)
+    {
+        if (root == nullptr) return nullptr;
         else if (data < root->data)
-            return Search(root->left, data);
+            root->left = Delete(root->left, data);
         else if (data > root->data)
-            return Search(root->right, data);
-    }
-
-    void breadth_first_search(Node* root)
-    {
-        std::queue<Node*> Queue;
-        if (root == nullptr) return;
-        Queue.push(root);
-
-        while (!Queue.empty())
+            root->right = Delete(root->right, data);
+        else // data found
         {
-            Node* front = Queue.front();
-            std::cout << front->data << " ";
-            if (front->left != nullptr) Queue.push(front->left);
-            if (front->right != nullptr) Queue.push(front->right);
-            Queue.pop();
+            if (root->left == nullptr && root->right == nullptr)
+            {
+                delete root;
+                root = nullptr;
+            }
+            else if (root->right == nullptr)
+            {
+                Node* tmp = root;
+                root = root->left;
+                delete tmp;
+            }
+            else if (root->left == nullptr)
+            {
+                Node* tmp = root;
+                root = root->right;
+                delete tmp;
+            }
+            else
+            {
+                Node* tmp = find_max(root->left);
+                root->data = tmp->data;
+                root->left = Delete(root->left, tmp->data);
+            }
+
         }
-
-
+        return root;
     }
 
-    void depth_first_search_preorder(Node* root)
+    void depth_preorder(Node* root)
     {
         if (root == nullptr) return;
-
+     
         std::cout << root->data << " ";
-        depth_first_search_preorder(root->left);
-        depth_first_search_preorder(root->right);
-
+        depth_preorder(root->left);
+        depth_preorder(root->right);
     }
+        
 
-    void depth_first_search_inorder(Node* root)
-    {
-        if (root == nullptr) return;
-
-        depth_first_search_inorder(root->left);
-        std::cout << root->data << " ";
-        depth_first_search_inorder(root->right);
-
-    }
-
-    void depth_first_search_postorder(Node* root)
-    {
-        if (root == nullptr) return;
-
-        depth_first_search_postorder(root->left);
-        depth_first_search_postorder(root->right);
-        std::cout << root->data << " ";
-
-    }
-
-    
-    
 };
-
-
 
 
 int main()
 {
     BST my_bst;
+    my_bst.create_node(25);
     my_bst.create_node(16);
-    my_bst.create_node(7);
-    my_bst.create_node(21);
-    my_bst.create_node(15);
-    my_bst.create_node(17);
     my_bst.create_node(32);
+    my_bst.create_node(5);
+    my_bst.create_node(19);
+    my_bst.create_node(27);
+    my_bst.create_node(39);
 
-    my_bst.depth_first_search_postorder(my_bst.get_root());
+    my_bst.depth_preorder(my_bst.get_root());
+
+    std::cout << "\n\n--------------------\n\n";
+
+    my_bst.Delete(my_bst.get_root(), 32);
+
+    my_bst.depth_preorder(my_bst.get_root());
 
 }
